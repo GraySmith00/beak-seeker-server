@@ -1,11 +1,24 @@
 const express = require('express');
 const app = express();
-const Joi = require('joi');
+
 const helmet = require('helmet');
 const morgan = require('morgan');
 const debug = require('debug')('app:startup');
 const users = require('./routes/users');
 const home = require('./routes/home');
+const mongoose = require('mongoose');
+
+// DB config
+const db = require('./config/keys').mongoURI;
+mongoose
+  .connect(db)
+  .then(() => console.log('MongoDB Connected'))
+  .catch(err => console.log(err));
+
+if (app.get('env') === 'development') {
+  app.use(morgan('dev'));
+  console.log('Morgan enabled...');
+}
 
 // Middleware
 app.use(express.json());
@@ -16,11 +29,6 @@ app.use(helmet());
 // Routes
 app.use('/api/users', users);
 app.use('/', home);
-
-if (app.get('env') === 'development') {
-  app.use(morgan('dev'));
-  debug('Morgan enabled...');
-}
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

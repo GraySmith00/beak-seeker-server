@@ -1,12 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const Joi = require('joi');
 
-const users = [
-  { id: 1, name: 'Gray' },
-  { id: 2, name: 'Paul' },
-  { id: 3, name: 'Mike' },
-  { id: 4, name: 'Tim' }
-];
+// Load User Model
+const User = require('../models/User');
 
 router.get('/', (req, res) => {
   if (!users) {
@@ -15,22 +12,29 @@ router.get('/', (req, res) => {
   res.send(users);
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   // validate
   const { error } = validateUser(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);
   }
 
+  const foundUser = await User.findOne({ email: req.body.email });
+  if (foundUser) return res.status(400).json({ email: 'Email already exists' });
+
   // create user
-  const user = {
-    id: users.length + 1,
-    name: req.body.name
-  };
-  users.push(user);
+  const newUser = new User({
+    name: req.body.name,
+    email: req.body.email
+  });
 
   // return newly created user
-  res.send(user);
+  try {
+    const user = await newUser.save();
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 router.get('/:id', (req, res) => {
@@ -87,6 +91,9 @@ router.delete('/:id', (req, res) => {
 const validateUser = user => {
   const schema = {
     name: Joi.string()
+      .min(3)
+      .required(),
+    email: Joi.string()
       .min(3)
       .required()
   };
