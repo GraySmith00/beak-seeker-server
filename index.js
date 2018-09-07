@@ -3,10 +3,13 @@ const app = express();
 
 const helmet = require('helmet');
 const morgan = require('morgan');
-const debug = require('debug')('app:startup');
 const users = require('./routes/users');
 const home = require('./routes/home');
 const mongoose = require('mongoose');
+const passport = require('passport');
+
+// Passport config
+const passportConfig = require('./config/passport');
 
 // DB config
 const db = require('./config/keys').mongoURI;
