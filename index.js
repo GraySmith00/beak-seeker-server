@@ -3,10 +3,60 @@ const app = express();
 
 const helmet = require('helmet');
 const morgan = require('morgan');
-const debug = require('debug')('app:startup');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const cors = require('cors');
+const session = require('express-session');
+const TwitterStrategy = require('passport-twitter').Strategy;
+
 const users = require('./routes/users');
 const home = require('./routes/home');
-const mongoose = require('mongoose');
+const twitter = require('./routes/twitter');
+const CONSUMER_KEY = require('./keys').CONSUMER_KEY;
+const CONSUMER_SECRET = require('./keys').CONSUMER_SECRET;
+
+app.get('/', (req, res) => {
+  res.send('working!!!!');
+});
+
+// CORS
+app.use(
+  cors({
+    allowedOrigins: ['localhost:3000']
+  })
+);
+
+app.use(session({ resave: false, saveUninitialized: true, secret: 'SECRET' }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Passport config
+passport.use(
+  new TwitterStrategy(
+    {
+      consumerKey: CONSUMER_KEY,
+      consumerSecret: CONSUMER_SECRET,
+      callbackURL: 'http://localhost:5000/twitter/return',
+      includeEmail: true
+    },
+    // function(token, tokenSecret, profile, callback) {
+    //   return callback(null, profile);
+    // },
+    function(token, tokenSecret, profile, done) {
+      User.upsertTwitterUser(token, tokenSecret, profile, function(err, user) {
+        return done(err, user);
+      });
+    }
+  )
+);
+
+passport.serializeUser((user, callback) => {
+  callback(null, user);
+});
+
+passport.deserializeUser((obj, callback) => {
+  callback(null, obj);
+});
 
 // DB config
 const db = require('./config/keys').mongoURI;
@@ -29,6 +79,8 @@ app.use(helmet());
 // Routes
 app.use('/api/users', users);
 app.use('/', home);
+app.use('/twitter', twitter);
 
+// Running the Server
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

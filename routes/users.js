@@ -12,31 +12,6 @@ router.get('/', (req, res) => {
   res.send(users);
 });
 
-router.post('/', async (req, res) => {
-  // validate
-  const { error } = validateUser(req.body);
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
-
-  const foundUser = await User.findOne({ email: req.body.email });
-  if (foundUser) return res.status(400).json({ email: 'Email already exists' });
-
-  // create user
-  const newUser = new User({
-    name: req.body.name,
-    email: req.body.email
-  });
-
-  // return newly created user
-  try {
-    const user = await newUser.save();
-    res.json(user);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
 router.get('/:id', (req, res) => {
   const user = users.find(user => {
     return user.id === parseInt(req.params.id);
@@ -91,13 +66,42 @@ router.delete('/:id', (req, res) => {
 const validateUser = user => {
   const schema = {
     name: Joi.string()
-      .min(3)
+      .min(2)
       .required(),
     email: Joi.string()
       .min(3)
-      .required()
+      .required(),
+    twitterProvider: Joi.object().keys({
+      twitter_id: Joi.string()
+    }),
+    image: Joi.string()
   };
   return Joi.validate(user, schema);
 };
 
 module.exports = router;
+
+// router.post('/', async (req, res) => {
+//   // validate
+//   const { error } = validateUser(req.body);
+//   if (error) {
+//     return res.status(400).send(error.details[0].message);
+//   }
+
+//   const foundUser = await User.findOne({ email: req.body.email });
+//   if (foundUser) return res.status(400).json({ email: 'Email already exists' });
+
+//   // create user
+//   const newUser = new User({
+//     name: req.body.name,
+//     email: req.body.email
+//   });
+
+//   // return newly created user
+//   try {
+//     const user = await newUser.save();
+//     res.json(user);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
