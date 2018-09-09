@@ -15,6 +15,17 @@ const twitter = require('./routes/twitter');
 const CONSUMER_KEY = require('./keys').CONSUMER_KEY;
 const CONSUMER_SECRET = require('./keys').CONSUMER_SECRET;
 
+app.get('/', (req, res) => {
+  res.send('working!!!!');
+});
+
+// CORS
+app.use(
+  cors({
+    allowedOrigins: ['localhost:3000']
+  })
+);
+
 app.use(session({ resave: false, saveUninitialized: true, secret: 'SECRET' }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -28,8 +39,13 @@ passport.use(
       callbackURL: 'http://localhost:5000/twitter/return',
       includeEmail: true
     },
-    function(token, tokenSecret, profile, callback) {
-      return callback(null, profile);
+    // function(token, tokenSecret, profile, callback) {
+    //   return callback(null, profile);
+    // },
+    function(token, tokenSecret, profile, done) {
+      User.upsertTwitterUser(token, tokenSecret, profile, function(err, user) {
+        return done(err, user);
+      });
     }
   )
 );
@@ -64,15 +80,6 @@ app.use(helmet());
 app.use('/api/users', users);
 app.use('/', home);
 app.use('/twitter', twitter);
-
-// CORS
-var corsOption = {
-  origin: true,
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-  exposedHeaders: ['x-auth-token']
-};
-app.use(cors(corsOption));
 
 // Running the Server
 const port = process.env.PORT || 5000;

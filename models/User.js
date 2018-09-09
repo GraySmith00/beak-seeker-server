@@ -3,6 +3,9 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const UserSchema = new Schema({
+  name: {
+    type: String
+  },
   email: {
     type: String,
     required: true,
@@ -12,10 +15,13 @@ const UserSchema = new Schema({
   },
   twitterProvider: {
     type: {
-      id: String,
-      token: String
+      twitter_id: String
+      // token: String
     },
     select: false
+  },
+  image: {
+    type: String
   }
 });
 
@@ -23,7 +29,7 @@ UserSchema.statics.upsertTwitterUser = function(
   token,
   tokenSecret,
   profile,
-  cb
+  callback
 ) {
   let that = this;
   return this.findOne(
@@ -43,14 +49,14 @@ UserSchema.statics.upsertTwitterUser = function(
         });
 
         // save the new user
-        newUser.save(function(error, savedUser) {
+        newUser.save((error, savedUser) => {
           if (error) {
             console.log(error);
           }
-          return cb(error, savedUser);
+          return callback(error, savedUser);
         });
       } else {
-        return cb(err, user);
+        return callback(err, user);
       }
     }
   );
