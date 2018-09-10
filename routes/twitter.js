@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const Joi = require('joi');
+const CONSUMER_KEY = require('../keys').CONSUMER_KEY;
+const CONSUMER_SECRET = require('../keys').CONSUMER_SECRET;
 
 const User = require('../models/User');
 
@@ -15,7 +17,7 @@ router.get(
   '/return',
   passport.authenticate('twitter', { session: false }),
   async (req, res) => {
-    res.json(req.user);
+    res.redirect('http://localhost:3000/home');
 
     // const { id_str, screen_name, email, profile_image_url } = req.user._json;
 

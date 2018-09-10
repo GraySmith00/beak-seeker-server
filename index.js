@@ -25,6 +25,13 @@ app.use(
     allowedOrigins: ['localhost:3000']
   })
 );
+var corsOption = {
+  origin: true,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  exposedHeaders: ['x-auth-token']
+};
+app.use(cors(corsOption));
 
 app.use(session({ resave: false, saveUninitialized: true, secret: 'SECRET' }));
 app.use(passport.initialize());
