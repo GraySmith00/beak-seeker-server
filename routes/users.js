@@ -5,28 +5,25 @@ const Joi = require('joi');
 // Load User Model
 const User = require('../models/User');
 
-router.get('/', (req, res) => {
-  if (!users) {
+router.get('/', async (req, res) => {
+  const users = await User.find();
+  if (users.length < 1) {
     res.status(404).send('No users were found :(');
   }
   res.send(users);
 });
 
-router.get('/:id', (req, res) => {
-  const user = users.find(user => {
-    return user.id === parseInt(req.params.id);
-  });
+router.get('/:id', async (req, res) => {
+  const user = await User.findById(req.params.id);
   if (!user) {
     return res.status(404).send('The user with the given ID was not found :(');
   }
-  res.send(user);
+  res.json(user);
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   // find the user
-  const user = users.find(user => {
-    return user.id === parseInt(req.params.id);
-  });
+  const user = await User.findById(req.params.id);
   if (!user) {
     return res.status(404).send('The user with the given ID was not found :(');
   }
@@ -44,11 +41,9 @@ router.put('/:id', (req, res) => {
   res.send(user);
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // look up the user
-  const user = users.find(user => {
-    return user.id === parseInt(req.params.id);
-  });
+  const user = await User.findById(req.params.id);
 
   // doesn't exist, return 404
   if (!user) {
