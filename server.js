@@ -8,29 +8,42 @@ const passport = require('passport');
 const cors = require('cors');
 const session = require('express-session');
 const TwitterStrategy = require('passport-twitter').Strategy;
+const bodyParser = require('body-parser');
 
 const users = require('./routes/users');
-const home = require('./routes/home');
 const twitter = require('./routes/twitter');
+
 const CONSUMER_KEY = require('./keys').CONSUMER_KEY;
 const CONSUMER_SECRET = require('./keys').CONSUMER_SECRET;
 
-app.get('/', (req, res) => {
-  res.send('working!!!!');
-});
-
 // CORS
+// app.all('/*', function(req, res, next) {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+//   next();
+// });
 app.use(
   cors({
     allowedOrigins: ['localhost:3000']
   })
 );
+var corsOption = {
+  origin: true,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  exposedHeaders: ['x-auth-token']
+};
+app.use(cors(corsOption));
 
+// BodyParser
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// Passport  & Sesson config
 app.use(session({ resave: false, saveUninitialized: true, secret: 'SECRET' }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Passport config
 passport.use(
   new TwitterStrategy(
     {
@@ -78,8 +91,11 @@ app.use(helmet());
 
 // Routes
 app.use('/api/users', users);
-app.use('/', home);
 app.use('/twitter', twitter);
+
+app.get('/', (req, res) => {
+  res.send('working!!!!');
+});
 
 // Running the Server
 const port = process.env.PORT || 5000;

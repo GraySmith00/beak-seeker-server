@@ -22,6 +22,12 @@ const UserSchema = new Schema({
   },
   image: {
     type: String
+  },
+  username: {
+    type: String
+  },
+  sightings: {
+    type: Array
   }
 });
 
@@ -41,11 +47,14 @@ UserSchema.statics.upsertTwitterUser = function(
       if (!user) {
         const newUser = new that({
           email: profile.emails[0].value,
+          username: profile.username,
+          image: profile.photos[0].value,
           twitterProvider: {
             id: profile.id,
             token: token,
             tokenSecret: tokenSecret
-          }
+          },
+          sightings: []
         });
 
         // save the new user
