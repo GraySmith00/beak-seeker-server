@@ -45,7 +45,6 @@ UserSchema.statics.upsertTwitterUser = function(
     function(err, user) {
       // no user was found, create a new one
       if (!user) {
-        console.log(profile);
         const newUser = new that({
           email: profile.emails[0].value,
           username: profile.username,
