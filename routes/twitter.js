@@ -32,7 +32,7 @@ router.get(
 
 // POST TWEET
 router.post('/posttweet', async (req, res) => {
-  const user = await User.findById(req.body._id).select('twitterProvider');
+  const user = await User.findById(req.body.userId).select('twitterProvider');
 
   const client = new Twitter({
     consumer_key: twitterKeys.consumer_key,
@@ -43,7 +43,7 @@ router.post('/posttweet', async (req, res) => {
 
   client
     .post('statuses/update', {
-      status: 'nice to sit down and write some music on a friday night'
+      status: req.body.status
     })
     .then(function(tweet) {
       console.log(tweet);
