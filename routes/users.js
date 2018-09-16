@@ -23,22 +23,22 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   // find the user
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.body._id);
   if (!user) {
     return res.status(404).send('The user with the given ID was not found :(');
   }
 
-  // validate
-  const { error } = validateUser(req.body);
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
-
   // update user
-  user.name = req.body.name;
-
-  // return updated user
-  res.send(user);
+  User.findOneAndUpdate(
+    { _id: req.body._id },
+    { $set: { sightings: req.body.sightings } },
+    { new: true },
+    (err, newUser) => {
+      if (err) {
+        console.log(err);
+      }
+    }
+  );
 });
 
 router.delete('/:id', async (req, res) => {
