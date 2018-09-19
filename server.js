@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+require('dotenv').config();
 
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -13,8 +14,7 @@ const bodyParser = require('body-parser');
 const users = require('./routes/users');
 const twitter = require('./routes/twitter');
 
-const CONSUMER_KEY = require('./keys').CONSUMER_KEY;
-const CONSUMER_SECRET = require('./keys').CONSUMER_SECRET;
+const twitterKeys = require('./config/twitterKeys');
 
 // CORS
 // app.all('/*', function(req, res, next) {
@@ -47,8 +47,8 @@ app.use(passport.session());
 passport.use(
   new TwitterStrategy(
     {
-      consumerKey: CONSUMER_KEY,
-      consumerSecret: CONSUMER_SECRET,
+      consumerKey: twitterKeys.consumer_key,
+      consumerSecret: twitterKeys.consumer_secret,
       callbackURL: 'http://localhost:5000/twitter/return',
       includeEmail: true
     },
@@ -72,10 +72,10 @@ passport.deserializeUser((obj, callback) => {
 });
 
 // DB config
-const db = require('./config/keys').mongoURI;
+// const db = require('./config/keys').mongoURI;
 mongoose
   .connect(
-    db,
+    process.env.DATABASE,
     { useNewUrlParser: true }
   )
   .then(() => console.log('MongoDB Connected'))

@@ -2,4 +2,7 @@
 /config/keys.js
 package-lock.json
 /keys.js
+/variables.env
+/config/variables.env
 /config/twitterKeys.js
+/.env
