@@ -58,9 +58,6 @@ const validateUser = user => {
     name: Joi.string()
       .min(2)
       .required(),
-    email: Joi.string()
-      .min(3)
-      .required(),
     twitterProvider: Joi.object().keys({
       twitter_id: Joi.string()
     }),

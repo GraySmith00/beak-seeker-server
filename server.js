@@ -17,11 +17,6 @@ const twitter = require('./routes/twitter');
 const twitterKeys = require('./config/twitterKeys');
 
 // CORS
-// app.all('/*', function(req, res, next) {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Headers', 'X-Requested-With');
-//   next();
-// });
 app.use(
   cors({
     allowedOrigins: ['localhost:3000']
