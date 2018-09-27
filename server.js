@@ -14,8 +14,6 @@ const bodyParser = require('body-parser');
 const users = require('./routes/users');
 const twitter = require('./routes/twitter');
 
-const twitterKeys = require('./config/twitterKeys');
-
 // CORS
 app.use(
   cors({
@@ -42,8 +40,8 @@ app.use(passport.session());
 passport.use(
   new TwitterStrategy(
     {
-      consumerKey: twitterKeys.consumer_key,
-      consumerSecret: twitterKeys.consumer_secret,
+      consumerKey: process.env.CONSUMER_KEY,
+      consumerSecret: process.env.CONSUMER_SECRET,
       callbackURL: 'http://localhost:5000/twitter/return',
       includeEmail: true
     },
