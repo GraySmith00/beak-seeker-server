@@ -2,19 +2,10 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const Joi = require('joi');
-const twitterKeys = require('../config/twitterKeys');
 
 var Twitter = require('twitter');
 
 const User = require('../models/User');
-
-// var client = new Twitter(twitterKeys);
-// var params = { screen_name: 'Redpillrevival' };
-// client.get('statuses/user_timeline', params, function(error, tweets, response) {
-//   if (!error) {
-//     console.log(tweets);
-//   }
-// });
 
 // REQUEST TOKEN
 router.get('/login', passport.authenticate('twitter'));
@@ -35,8 +26,8 @@ router.post('/posttweet', async (req, res) => {
   const user = await User.findById(req.body.userId).select('twitterProvider');
 
   const client = new Twitter({
-    consumer_key: twitterKeys.consumer_key,
-    consumer_secret: twitterKeys.consumer_secret,
+    consumer_key: process.env.CONSUMER_KEY,
+    consumer_secret: process.env.CONSUMER_SECRET,
     access_token_key: user.twitterProvider.token,
     access_token_secret: user.twitterProvider.tokenSecret
   });
