@@ -17,7 +17,7 @@ const twitter = require('./routes/twitter');
 // CORS
 app.use(
   cors({
-    allowedOrigins: ['localhost:3000']
+    allowedOrigins: ['localhost:3000', 'https://gs-beakseeker.herokuapp.com']
   })
 );
 var corsOption = {
