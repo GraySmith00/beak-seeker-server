@@ -16,10 +16,8 @@ router.get(
   passport.authenticate('twitter', { session: false }),
   async (req, res) => {
     const { _id } = req.user;
-    if (process.env.NODE_ENV=production) {
       return res.redirect(`http://gs-beakseeker.herokuapp.com/home?id=${_id}`);
-    }
-    return res.redirect(`http://localhost:3000/home?id=${_id}`);
+    // return res.redirect(`http://localhost:3000/home?id=${_id}`);
     // res.send(req.user);
   }
 );
