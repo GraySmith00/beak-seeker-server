@@ -42,7 +42,7 @@ passport.use(
     {
       consumerKey: process.env.CONSUMER_KEY,
       consumerSecret: process.env.CONSUMER_SECRET,
-      callbackURL: 'http://localhost:5000/twitter/return',
+      callbackURL: 'http://gs-beakseeker-server.herokuapp.com/twitter/return',
       includeEmail: true
     },
     // function(token, tokenSecret, profile, callback) {
