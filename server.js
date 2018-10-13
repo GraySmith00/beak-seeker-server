@@ -86,6 +86,7 @@ app.use(express.static('public'));
 app.use(helmet());
 
 // Routes
+app.get('/favicon.ico', (req, res) => res.status(204));
 app.use('/api/users', users);
 app.use('/twitter', twitter);
 
