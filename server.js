@@ -15,16 +15,7 @@ const users = require('./routes/users');
 const twitter = require('./routes/twitter');
 
 // CORS
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-// app.use(
-//   cors({
-//     allowedOrigins: ['localhost:3000', 'https://gs-beakseeker.herokuapp.com']
-//   })
-// );
+app.use(cors());
 // var corsOption = {
 //   origin: true,
 //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -50,9 +41,6 @@ passport.use(
       callbackURL: 'https://gs-beakseeker-server.herokuapp.com/twitter/return',
       includeEmail: true
     },
-    // function(token, tokenSecret, profile, callback) {
-    //   return callback(null, profile);
-    // },
     function(token, tokenSecret, profile, done) {
       User.upsertTwitterUser(token, tokenSecret, profile, function(err, user) {
         return done(err, user);
@@ -70,7 +58,6 @@ passport.deserializeUser((obj, callback) => {
 });
 
 // DB config
-// const db = require('./config/keys').mongoURI;
 mongoose
   .connect(
     process.env.DATABASE,
