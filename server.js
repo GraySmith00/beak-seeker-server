@@ -16,13 +16,6 @@ const twitter = require('./routes/twitter');
 
 // CORS
 app.use(cors());
-// var corsOption = {
-//   origin: true,
-//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   credentials: true,
-//   exposedHeaders: ['x-auth-token']
-// };
-// app.use(cors(corsOption));
 
 // BodyParser
 app.use(bodyParser.urlencoded({ extended: false }));

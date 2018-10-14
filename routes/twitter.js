@@ -17,8 +17,6 @@ router.get(
   async (req, res) => {
     const { _id } = req.user;
       return res.redirect(`https://gs-beakseeker.herokuapp.com/home?id=${_id}`);
-    // return res.redirect(`http://localhost:3000/home?id=${_id}`);
-    // res.send(req.user);
   }
 );
 
